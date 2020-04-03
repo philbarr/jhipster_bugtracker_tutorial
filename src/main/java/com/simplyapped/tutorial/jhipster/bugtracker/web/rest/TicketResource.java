@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import com.simplyapped.tutorial.jhipster.bugtracker.domain.Ticket;
 import com.simplyapped.tutorial.jhipster.bugtracker.repository.TicketRepository;
+import com.simplyapped.tutorial.jhipster.bugtracker.security.AuthoritiesConstants;
 import com.simplyapped.tutorial.jhipster.bugtracker.web.rest.errors.BadRequestAlertException;
 
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -148,6 +150,7 @@ public class TicketResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/tickets/{id}")
+    @Secured(AuthoritiesConstants.ADMIN)
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
         log.debug("REST request to delete Ticket : {}", id);
         ticketRepository.deleteById(id);
