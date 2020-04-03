@@ -1,32 +1,43 @@
 package com.simplyapped.tutorial.jhipster.bugtracker.web.rest;
 
-import com.simplyapped.tutorial.jhipster.bugtracker.domain.Ticket;
-import com.simplyapped.tutorial.jhipster.bugtracker.repository.TicketRepository;
-import com.simplyapped.tutorial.jhipster.bugtracker.web.rest.errors.BadRequestAlertException;
-
-import io.github.jhipster.web.util.HeaderUtil;
-import io.github.jhipster.web.util.PaginationUtil;
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
+import com.simplyapped.tutorial.jhipster.bugtracker.domain.Ticket;
+import com.simplyapped.tutorial.jhipster.bugtracker.repository.TicketRepository;
+import com.simplyapped.tutorial.jhipster.bugtracker.web.rest.errors.BadRequestAlertException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
+
 /**
- * REST controller for managing {@link com.simplyapped.tutorial.jhipster.bugtracker.domain.Ticket}.
+ * REST controller for managing
+ * {@link com.simplyapped.tutorial.jhipster.bugtracker.domain.Ticket}.
  */
 @RestController
 @RequestMapping("/api")
@@ -50,7 +61,9 @@ public class TicketResource {
      * {@code POST  /tickets} : Create a new ticket.
      *
      * @param ticket the ticket to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new ticket, or with status {@code 400 (Bad Request)} if the ticket has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new ticket, or with status {@code 400 (Bad Request)} if the
+     *         ticket has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/tickets")
@@ -60,18 +73,21 @@ public class TicketResource {
             throw new BadRequestAlertException("A new ticket cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Ticket result = ticketRepository.save(ticket);
-        return ResponseEntity.created(new URI("/api/tickets/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        return ResponseEntity
+                .created(new URI("/api/tickets/" + result.getId())).headers(HeaderUtil
+                        .createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+                .body(result);
     }
 
     /**
      * {@code PUT  /tickets} : Updates an existing ticket.
      *
      * @param ticket the ticket to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated ticket,
-     * or with status {@code 400 (Bad Request)} if the ticket is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the ticket couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated ticket, or with status {@code 400 (Bad Request)} if the
+     *         ticket is not valid, or with status
+     *         {@code 500 (Internal Server Error)} if the ticket couldn't be
+     *         updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/tickets")
@@ -81,29 +97,33 @@ public class TicketResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Ticket result = ticketRepository.save(ticket);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, ticket.getId().toString()))
-            .body(result);
+        return ResponseEntity.ok().headers(
+                HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, ticket.getId().toString()))
+                .body(result);
     }
 
     /**
      * {@code GET  /tickets} : get all the tickets.
      *
-     * @param pageable the pagination information.
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tickets in body.
+     * @param pageable  the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is
+     *                  applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of tickets in body.
      */
     @GetMapping("/tickets")
-    public ResponseEntity<List<Ticket>> getAllTickets(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public ResponseEntity<List<Ticket>> getAllTickets(Pageable pageable,
+            @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Tickets");
         Page<Ticket> page;
         if (eagerload) {
             page = ticketRepository.findAllWithEagerRelationships(pageable);
         } else {
-            //page = ticketRepository.findAll(pageable);
+            // page = ticketRepository.findAll(pageable);
             page = ticketRepository.findAllByOrderByDueDateAsc(pageable);
         }
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        HttpHeaders headers = PaginationUtil
+                .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
@@ -111,7 +131,8 @@ public class TicketResource {
      * {@code GET  /tickets/:id} : get the "id" ticket.
      *
      * @param id the id of the ticket to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the ticket, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the ticket, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/tickets/{id}")
     public ResponseEntity<Ticket> getTicket(@PathVariable Long id) {
@@ -130,6 +151,23 @@ public class TicketResource {
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
         log.debug("REST request to delete Ticket : {}", id);
         ticketRepository.deleteById(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent()
+                .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+                .build();
+    }
+
+    @GetMapping("/tickets/self")
+    public ResponseEntity<List<Ticket>> getAllSelfTickets(Pageable pageable,
+            @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+        log.debug("REST request to get a page of user's Tickets");
+        Page<Ticket> page;
+        if (eagerload) {
+            page = ticketRepository.findAllWithEagerRelationships(pageable);
+        } else {
+            page = new PageImpl<>(ticketRepository.findByAssignedToIsCurrentUser());
+        }
+        HttpHeaders headers = PaginationUtil
+                .generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 }
